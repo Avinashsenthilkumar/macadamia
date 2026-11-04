@@ -82,28 +82,28 @@ export function Header({ businessName, logoUrl, phone, announcement }: HeaderPro
                 : "container-x py-5",
             )}
           >
-            <Link href="/" className="group flex items-center gap-3" aria-label={`${businessName} – home`}>
+            <Link href="/" className="group flex shrink-0 items-center gap-3" aria-label={`${businessName} – home`}>
               <motion.span whileHover={{ rotate: -8, scale: 1.06 }} transition={{ type: "spring", stiffness: 300, damping: 14 }} className="block">
                 <Image src={logoUrl} alt="" width={44} height={44} unoptimized className="h-10 w-10 rounded-xl sm:h-11 sm:w-11" priority />
               </motion.span>
-              <span className="leading-none">
+              <span className="whitespace-nowrap leading-none">
                 <span className={cn("block font-display text-lg font-semibold tracking-tight transition-colors sm:text-xl", scrolled ? "text-forest" : "text-ivory")}>
                   {businessName}
                 </span>
-                <span className={cn("mt-1 block text-[0.62rem] font-bold uppercase tracking-[0.25em] transition-colors", scrolled ? "text-leaf" : "text-sage")}>
+                <span className={cn("mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.2em] transition-colors", scrolled ? "text-leaf" : "text-sage")}>
                   Macadamia · Since 1980
                 </span>
               </span>
             </Link>
 
             <nav aria-label="Main" className="hidden xl:block">
-              <ul className="flex items-center gap-1">
+              <ul className="flex items-center gap-0.5 whitespace-nowrap">
                 {mainNav.slice(1).map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       className={cn(
-                        "relative block rounded-full px-3.5 py-2 text-[0.88rem] font-semibold transition-colors",
+                        "relative block whitespace-nowrap rounded-full px-3 py-2 text-[0.84rem] font-semibold transition-colors 2xl:px-3.5 2xl:text-[0.9rem]",
                         scrolled ? "text-ink/75 hover:text-forest" : "text-ivory/80 hover:text-ivory",
                         isActive(item.href) && (scrolled ? "text-forest" : "text-ivory"),
                       )}
@@ -122,12 +122,11 @@ export function Header({ businessName, logoUrl, phone, announcement }: HeaderPro
               </ul>
             </nav>
 
-            <div className="flex items-center gap-2">
-              <a href={telHref(phone)} className={cn("hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold transition md:flex", scrolled ? "text-forest hover:bg-forest/5" : "text-ivory hover:bg-white/10")}>
-                <Phone className="h-4 w-4" /> <span className="hidden 2xl:inline">{phone}</span>
-                <span className="sr-only 2xl:hidden">Call {phone}</span>
+            <div className="flex shrink-0 items-center gap-2">
+              <a href={telHref(phone)} aria-label={`Call ${phone}`} title={phone} className={cn("hidden h-10 w-10 items-center justify-center rounded-full transition md:flex", scrolled ? "text-forest hover:bg-forest/5" : "text-ivory hover:bg-white/10")}>
+                <Phone className="h-4 w-4" />
               </a>
-              <Link href="/contact#enquiry" className={buttonClasses({ variant: scrolled ? "primary" : "light", size: "sm", className: "hidden sm:inline-flex" })}>
+              <Link href="/contact#enquiry" className={buttonClasses({ variant: scrolled ? "primary" : "light", size: "sm", className: "hidden whitespace-nowrap sm:inline-flex" })}>
                 Get a Quote <ArrowSlide />
               </Link>
               <button

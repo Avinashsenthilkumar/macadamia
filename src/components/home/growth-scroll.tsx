@@ -54,6 +54,8 @@ export function GrowthScroll() {
     if (!img || !img.naturalWidth) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const cw = canvas.width;
     const ch = canvas.height;
     const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
@@ -67,7 +69,7 @@ export function GrowthScroll() {
     const resize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(canvas.clientWidth * dpr);
       canvas.height = Math.round(canvas.clientHeight * dpr);
       draw(currentRef.current);
@@ -129,10 +131,8 @@ export function GrowthScroll() {
     <section ref={sectionRef} aria-label="Macadamia growth journey" className="relative h-[420vh] bg-deep md:h-[520vh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" aria-hidden />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-deep/85 via-deep/35 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep/80 via-transparent to-deep/50" />
 
-        <div className="container-x relative flex h-full flex-col justify-between pb-14 pt-28 text-ivory sm:pb-20">
+        <div className="container-x relative flex h-full flex-col justify-between pb-14 pt-28 text-ivory [text-shadow:0_2px_18px_rgba(0,0,0,0.65),0_1px_3px_rgba(0,0,0,0.5)] sm:pb-20">
           <div className="flex items-start justify-between gap-6">
             <div>
               <span className="eyebrow text-sage">The growth journey</span>
@@ -157,7 +157,7 @@ export function GrowthScroll() {
                     {String(stage + 1).padStart(2, "0")} <span className="text-ivory/40">/ {String(stages.length).padStart(2, "0")}</span>
                   </p>
                   <h3 className="mt-2 font-display text-4xl sm:text-6xl">{current.title}</h3>
-                  <p className="mt-4 text-base leading-relaxed text-ivory/80 sm:text-lg">{current.text}</p>
+                  <p className="mt-4 text-base leading-relaxed text-ivory sm:text-lg">{current.text}</p>
                 </motion.div>
               </AnimatePresence>
             </div>

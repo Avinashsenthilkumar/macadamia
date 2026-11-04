@@ -52,13 +52,13 @@ export const quickFacts = [
 ];
 
 export const cultivationHighlights = [
-  { icon: "sun", title: "Climate", text: "Mild, frost-free subtropical conditions with shelter from strong winds." },
-  { icon: "mountain", title: "Soil", text: "Deep, well-drained loams; avoid heavy clay and waterlogged sites." },
-  { icon: "droplets", title: "Irrigation", text: "Consistent moisture for young trees, flowering and nut fill — never waterlogging." },
-  { icon: "shovel", title: "Planting", text: "Plant at nursery depth, water in well and mulch around the base." },
-  { icon: "ruler", title: "Spacing", text: "Depends on variety vigour and pruning — commonly 4–6 m within rows." },
-  { icon: "flower", title: "Pollination", text: "Cross-pollination between compatible varieties improves nut set." },
-  { icon: "scissors", title: "Maintenance", text: "Formative pruning, soil-test-led nutrition and regular scouting." },
+  { icon: "sun", title: "Climate", text: "Mild, frost-free subtropical conditions with shelter from strong winds.", image: "/images/orchard/macadamia-orchard-rows.webp", alt: "Macadamia orchard in mild sunlight" },
+  { icon: "mountain", title: "Soil", text: "Deep, well-drained loams; avoid heavy clay and waterlogged sites.", image: "/images/orchard/orchard-sprout.webp", alt: "A seedling emerging from loose, well-drained soil" },
+  { icon: "droplets", title: "Irrigation", text: "Consistent moisture for young trees, flowering and nut fill — never waterlogging.", image: "/images/gallery/field-planting-pond.webp", alt: "Planting beside a farm pond" },
+  { icon: "shovel", title: "Planting", text: "Plant at nursery depth, water in well and mulch around the base.", image: "/images/gallery/nursery-field-care.webp", alt: "Planting young saplings in a field" },
+  { icon: "ruler", title: "Spacing", text: "Depends on variety vigour and pruning — commonly 4–6 m within rows.", image: "/images/orchard/macadamia-tree-orchard.webp", alt: "Evenly spaced macadamia trees" },
+  { icon: "flower", title: "Pollination", text: "Cross-pollination between compatible varieties improves nut set.", image: "/images/orchard/macadamia-flowers.webp", alt: "Macadamia flower racemes" },
+  { icon: "scissors", title: "Maintenance", text: "Formative pruning, soil-test-led nutrition and regular scouting.", image: "/images/orchard/orchard-young-tree.webp", alt: "A young, well-formed macadamia tree" },
 ] as const;
 
 export const guideSections: GuideSection[] = [

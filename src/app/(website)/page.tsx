@@ -188,28 +188,26 @@ export default async function HomePage() {
           <Stagger className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" stagger={0.07}>
             {cultivationHighlights.map((h, i) => (
               <StaggerItem key={h.title} className={i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}>
-                <div className={`group relative h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-7 transition-all duration-500 hover:-translate-y-1 hover:border-sage/40 hover:bg-white/[0.08] ${i === 0 ? "isolate flex min-h-80 flex-col justify-end lg:p-10" : ""}`}>
-                  {i === 0 ? (
-                    <>
-                      <Image src="/images/orchard/macadamia-orchard-rows.webp" alt="Rows of macadamia trees in an orchard (illustrative)" fill sizes="(min-width:1024px) 50vw, 100vw" className="-z-10 object-cover opacity-60 transition-transform duration-[1.5s] group-hover:scale-110" />
-                      <span className="absolute inset-0 -z-10 bg-gradient-to-t from-forest via-forest/70 to-forest/10" />
-                    </>
-                  ) : null}
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-sage/15 text-sage transition-all duration-500 group-hover:rotate-[-10deg] group-hover:scale-110 group-hover:bg-sage group-hover:text-deep">
+                <div className={`group relative isolate flex h-full min-h-64 flex-col justify-end overflow-hidden rounded-3xl border border-white/10 p-7 transition-all duration-500 hover:-translate-y-1 hover:border-sage/50 hover:shadow-2xl ${i === 0 ? "min-h-80 lg:p-10" : ""}`}>
+                  <Image src={h.image} alt={h.alt} fill sizes={i === 0 ? "(min-width:1024px) 50vw, 100vw" : "(min-width:1024px) 25vw, 50vw"} className="-z-10 object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                  <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-deep/90 via-deep/45 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-ivory/15 text-ivory backdrop-blur-md transition-all duration-500 group-hover:rotate-[-10deg] group-hover:scale-110 group-hover:bg-sage group-hover:text-deep">
                     <Icon name={h.icon} className="h-6 w-6" />
                   </span>
-                  <h3 className={`mt-5 font-display ${i === 0 ? "text-4xl" : "text-2xl"}`}>{h.title}</h3>
-                  <p className="mt-2 leading-relaxed text-ivory/70">{h.text}</p>
-                  <span aria-hidden className="absolute -right-6 -top-6 font-display text-8xl text-white/[0.04] transition-transform duration-700 group-hover:scale-125">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className={`mt-4 font-display drop-shadow ${i === 0 ? "text-4xl" : "text-2xl"}`}>{h.title}</h3>
+                  <p className="mt-2 leading-relaxed text-ivory/85 drop-shadow">{h.text}</p>
+                  <span aria-hidden className="absolute right-5 top-4 font-display text-5xl text-white/25">{String(i + 1).padStart(2, "0")}</span>
                 </div>
               </StaggerItem>
             ))}
-            <StaggerItem>
-              <Link href="/cultivation-guide" className="group flex h-full flex-col justify-between rounded-3xl bg-sage p-7 text-deep transition-all duration-500 hover:-translate-y-1 hover:bg-ivory">
-                <span className="text-xs font-bold uppercase tracking-[0.2em]">Full guide</span>
-                <span className="mt-6 flex items-end justify-between font-display text-2xl">
-                  Read the complete cultivation guide
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-deep text-ivory transition-transform duration-500 group-hover:rotate-[-45deg]">→</span>
+            <StaggerItem className="sm:col-span-2">
+              <Link href="/cultivation-guide" className="group relative isolate flex h-full min-h-64 flex-col justify-between overflow-hidden rounded-3xl p-7 text-ivory transition-all duration-500 hover:-translate-y-1">
+                <Image src="/images/orchard/macadamia-nuts-on-tree.webp" alt="Macadamia nuts on the tree" fill sizes="(min-width:1024px) 50vw, 100vw" className="-z-10 object-cover transition-transform duration-[1.5s] group-hover:scale-110" />
+                <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-deep/85 via-deep/50 to-transparent" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-sage">Full guide</span>
+                <span className="mt-6 flex items-end justify-between gap-6 font-display text-3xl">
+                  <span className="max-w-xs">Read the complete cultivation guide</span>
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sage text-deep transition-transform duration-500 group-hover:rotate-[-45deg]">→</span>
                 </span>
               </Link>
             </StaggerItem>
