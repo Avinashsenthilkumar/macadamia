@@ -3,7 +3,7 @@
  * has been run on production), so public pages are never empty.
  * Admin-created content always takes priority over these fallbacks.
  */
-import type { Prisma } from "@prisma/client";
+import type { BlogCategory, Faq, GalleryImage, Prisma, Service } from "@prisma/client";
 import { seedPosts } from "@/content/posts";
 import { seedFaqs, seedGallery, seedOrchard, seedServices } from "@/content/seed-data";
 import { readingTime, slugify } from "@/lib/utils";
@@ -11,10 +11,10 @@ import { readingTime, slugify } from "@/lib/utils";
 const STAMP = new Date("2026-11-01T00:00:00.000Z");
 
 type PostWithCategory = Prisma.BlogPostGetPayload<{ include: { category: true } }>;
-type GalleryRow = Prisma.GalleryImageGetPayload<object>;
-type FaqRow = Prisma.FaqGetPayload<object>;
-type ServiceRow = Prisma.ServiceGetPayload<object>;
-type CategoryRow = Prisma.BlogCategoryGetPayload<object>;
+type GalleryRow = GalleryImage;
+type FaqRow = Faq;
+type ServiceRow = Service;
+type CategoryRow = BlogCategory;
 
 export const fallbackCategories: CategoryRow[] = [...new Set(seedPosts.map((p) => p.category))].map((name) => ({
   id: `static-cat-${slugify(name)}`,
