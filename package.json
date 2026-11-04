@@ -1,0 +1,57 @@
+{
+  "name": "ganesh-nursery-macadamia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ganesh Nursery \u2013 Macadamia nut plants and plantation solutions website (Next.js + Prisma + PostgreSQL)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio",
+    "admin:create": "tsx scripts/create-admin.ts",
+    "postinstall": "prisma generate"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.1",
+    "@prisma/client": "^6.16.0",
+    "bcryptjs": "^3.0.2",
+    "clsx": "^2.1.1",
+    "jose": "^6.1.0",
+    "lucide-react": "^0.544.0",
+    "motion": "^12.23.12",
+    "next": "^15.5.9",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.62.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "eslint": "^9.35.0",
+    "eslint-config-next": "^15.5.9",
+    "prisma": "^6.16.0",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  }
+}

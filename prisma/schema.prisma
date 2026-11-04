@@ -1,0 +1,312 @@
+// Ganesh Nursery – Macadamia website
+// PostgreSQL (Neon compatible). Run `npx prisma migrate dev --name init` to create the first migration.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ──────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum PriceType {
+  FIXED
+  ON_REQUEST
+  QUOTATION
+}
+
+enum Availability {
+  IN_STOCK
+  LIMITED
+  OUT_OF_STOCK
+  PRE_ORDER
+  ON_ENQUIRY
+}
+
+enum Propagation {
+  GRAFTED
+  SEEDLING
+  CUTTING
+  AIR_LAYERED
+  OTHER
+  UNSPECIFIED
+}
+
+enum EnquiryType {
+  INDIVIDUAL_PURCHASE
+  BULK_SAPLING
+  PLANTATION_CONSULTATION
+  AGRICULTURAL_GUIDANCE
+  GENERAL
+}
+
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  INTERESTED
+  QUOTATION_SENT
+  CONVERTED
+  CLOSED
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum GalleryCategory {
+  NURSERY
+  SAPLINGS
+  TREES
+  NUTS
+  PLANTATION
+  FARM_ACTIVITIES
+}
+
+// ─── Admin & security ───────────────────────────────────────────────────
+
+model AdminUser {
+  id             String        @id @default(cuid())
+  email          String        @unique
+  name           String
+  passwordHash   String
+  role           Role          @default(EDITOR)
+  isActive       Boolean       @default(true)
+  /// Incremented to invalidate every existing session for this user
+  sessionVersion Int           @default(0)
+  lastLoginAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  notes          EnquiryNote[]
+  auditLogs      AuditLog[]
+  posts          BlogPost[]
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  ipHash    String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+  @@index([ipHash, createdAt])
+}
+
+model AuditLog {
+  id         String     @id @default(cuid())
+  actorId    String?
+  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorEmail String
+  action     String
+  entity     String
+  entityId   String?
+  details    Json?
+  createdAt  DateTime   @default(now())
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+// ─── Catalogue ──────────────────────────────────────────────────────────
+
+model Product {
+  id                String         @id @default(cuid())
+  slug              String         @unique
+  name              String
+  scientificName    String?
+  variety           String?
+  shortDescription  String?
+  description       String         @db.Text
+  growingInfo       String?        @db.Text
+  propagation       Propagation    @default(UNSPECIFIED)
+  propagationMethod String?
+  plantAge          String?
+  plantHeight       String?
+  containerSize     String?
+  priceType         PriceType      @default(ON_REQUEST)
+  price             Decimal?       @db.Decimal(10, 2)
+  priceUnit         String?
+  showPrice         Boolean        @default(false)
+  availability      Availability   @default(ON_ENQUIRY)
+  stockQuantity     Int?
+  isFeatured        Boolean        @default(false)
+  isPublished       Boolean        @default(false)
+  sortOrder         Int            @default(0)
+  seoTitle          String?
+  seoDescription    String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  images            ProductImage[]
+  enquiries         Enquiry[]
+
+  @@index([isPublished, isFeatured])
+  @@index([sortOrder])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId, sortOrder])
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  summary     String
+  description String    @db.Text
+  icon        String    @default("sprout")
+  /// Only services confirmed by Ganesh Nursery should be marked available
+  isAvailable Boolean   @default(false)
+  isPublished Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  enquiries   Enquiry[]
+}
+
+// ─── Enquiries ──────────────────────────────────────────────────────────
+
+model Enquiry {
+  id             String        @id @default(cuid())
+  reference      String        @unique
+  fullName       String
+  phone          String
+  email          String?
+  state          String?
+  district       String?
+  location       String?
+  landArea       String?
+  plantsRequired Int?
+  enquiryType    EnquiryType   @default(GENERAL)
+  message        String        @db.Text
+  source         String        @default("contact")
+  productId      String?
+  product        Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  serviceId      String?
+  service        Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  status         EnquiryStatus @default(NEW)
+  followUpAt     DateTime?
+  followUpDone   Boolean       @default(false)
+  ipHash         String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  notes          EnquiryNote[]
+
+  @@index([status, createdAt])
+  @@index([enquiryType])
+  @@index([createdAt])
+  @@index([ipHash, createdAt])
+}
+
+model EnquiryNote {
+  id        String     @id @default(cuid())
+  enquiryId String
+  enquiry   Enquiry    @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    AdminUser? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  body      String     @db.Text
+  createdAt DateTime   @default(now())
+
+  @@index([enquiryId, createdAt])
+}
+
+// ─── Content ────────────────────────────────────────────────────────────
+
+model BlogCategory {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  posts       BlogPost[]
+}
+
+model BlogPost {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  excerpt        String
+  content        String        @db.Text
+  coverImage     String?
+  coverAlt       String?
+  categoryId     String?
+  category       BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  authorId       String?
+  author         AdminUser?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName     String        @default("Ganesh Nursery Team")
+  status         PostStatus    @default(DRAFT)
+  publishedAt    DateTime?
+  readingMinutes Int           @default(1)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+}
+
+model GalleryImage {
+  id             String          @id @default(cuid())
+  url            String
+  alt            String
+  caption        String?
+  category       GalleryCategory
+  /// true = genuine Ganesh Nursery photograph, false = illustrative reference image
+  isCompanyPhoto Boolean         @default(true)
+  isPublished    Boolean         @default(true)
+  sortOrder      Int             @default(0)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([category, sortOrder])
+}
+
+model Faq {
+  id          String   @id @default(cuid())
+  question    String
+  answer      String   @db.Text
+  category    String   @default("General")
+  isPublished Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  location    String?
+  quote       String   @db.Text
+  /// Admin must confirm this is a genuine customer testimonial before publishing
+  isPublished Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model WebsiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
