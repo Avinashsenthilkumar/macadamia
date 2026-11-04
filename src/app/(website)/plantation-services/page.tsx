@@ -5,6 +5,8 @@ import { EnquiryForm } from "@/components/forms/enquiry-form";
 import { Reveal } from "@/components/motion/primitives";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Icon } from "@/components/ui/icon";
+import Image from "next/image";
+import { serviceImage } from "@/content/images";
 import { getPublishedServices } from "@/lib/queries";
 import { getSiteSettings } from "@/lib/settings";
 import { pageMetadata } from "@/lib/seo";
@@ -49,10 +51,12 @@ export default async function PlantationServicesPage() {
             ) : null}
             {services.map((s, i) => (
               <div key={s.id} className={cn("lg:sticky", stickyTops[i % stickyTops.length])}>
-                <Reveal className="group relative overflow-hidden rounded-[2rem] bg-white p-8 shadow-lift ring-1 ring-forest/5 sm:p-10">
-                  <span aria-hidden className="absolute -right-4 -top-10 font-display text-[9rem] leading-none text-forest/[0.04] transition-transform duration-700 group-hover:-translate-x-4">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                <Reveal className="group relative overflow-hidden rounded-[2rem] bg-white shadow-lift ring-1 ring-forest/5">
+                  <div className="relative h-48 overflow-hidden sm:h-56">
+                    <Image src={serviceImage(s.slug, i).src} alt={serviceImage(s.slug, i).alt} fill sizes="(min-width:1024px) 60vw, 100vw" className="object-cover transition-transform duration-[1.2s] group-hover:scale-105" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-white via-white/10 to-transparent" />
+                  </div>
+                  <div className="relative -mt-10 p-8 pt-0 sm:p-10 sm:pt-0">
                   <div className="relative flex flex-col gap-6 sm:flex-row">
                     <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-forest text-ivory transition-all duration-500 group-hover:rotate-[-8deg] group-hover:bg-nut">
                       <Icon name={s.icon} className="h-7 w-7" />
@@ -73,6 +77,7 @@ export default async function PlantationServicesPage() {
                       <p className="mt-2 text-lg font-semibold text-leaf">{s.summary}</p>
                       <p className="mt-3 whitespace-pre-line leading-relaxed text-ink/70">{s.description}</p>
                     </div>
+                  </div>
                   </div>
                 </Reveal>
               </div>

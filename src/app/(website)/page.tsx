@@ -16,6 +16,7 @@ import { ArrowSlide, buttonClasses } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-float";
 import { cultivationHighlights } from "@/content/macadamia";
+import { pics } from "@/content/images";
 import { getGalleryImages, getPublishedFaqs, getPublishedProducts, getPublishedTestimonials } from "@/lib/queries";
 import { getSiteSettings } from "@/lib/settings";
 import { pageMetadata } from "@/lib/seo";
@@ -31,12 +32,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const whyChoose = [
-  { Icon: Leaf, title: "Nursery experience", text: "A nursery business established in 1980, raising timber and plantation saplings for decades." },
-  { Icon: Sprout, title: "Plant selection expertise", text: "Seed sourcing from selected mother trees and careful raising of planting material." },
-  { Icon: Users, title: "Customer guidance", text: "Straight answers to your questions before you buy — and after you plant." },
-  { Icon: HeartHandshake, title: "Plantation support", text: "Practical support as you plan and establish your plantation." },
-  { Icon: Package, title: "Bulk enquiry support", text: "Requirements for larger plantations handled by our team directly." },
-  { Icon: Truck, title: "Delivery assistance", text: "Help arranging delivery of plants, where available for your location." },
+  { Icon: Leaf, pic: pics.nurseryBeds, title: "Nursery experience", text: "A nursery business established in 1980, raising timber and plantation saplings for decades." },
+  { Icon: Sprout, pic: pics.motherTree, title: "Plant selection expertise", text: "Seed sourcing from selected mother trees and careful raising of planting material." },
+  { Icon: Users, pic: pics.inspection, title: "Customer guidance", text: "Straight answers to your questions before you buy — and after you plant." },
+  { Icon: HeartHandshake, pic: pics.pondPlanting, title: "Plantation support", text: "Practical support as you plan and establish your plantation." },
+  { Icon: Package, pic: pics.truck, title: "Bulk enquiry support", text: "Requirements for larger plantations handled by our team directly." },
+  { Icon: Truck, pic: pics.crates, title: "Delivery assistance", text: "Help arranging delivery of plants, where available for your location." },
 ];
 
 export default async function HomePage() {
@@ -237,15 +238,21 @@ export default async function HomePage() {
         <div className="container-x">
           <SectionHeading align="center" eyebrow="Why Choose Ganesh Nursery?" title="Experience you can talk to." />
           <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {whyChoose.map(({ Icon: I, title, text }) => (
+            {whyChoose.map(({ Icon: I, pic, title, text }) => (
               <StaggerItem key={title}>
-                <div className="group relative h-full overflow-hidden rounded-3xl bg-white p-8 shadow-soft ring-1 ring-forest/5 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-lift">
+                <div className="group relative h-full overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-forest/5 transition-all duration-500 hover:-translate-y-1.5 hover:shadow-lift">
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <Image src={pic.src} alt={pic.alt} fill sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-[1.2s] group-hover:scale-110" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-deep/40 to-transparent" />
+                  </div>
                   <span className="absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-leaf to-nut transition-transform duration-700 group-hover:scale-x-100" />
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-cream text-forest transition-all duration-500 group-hover:bg-forest group-hover:text-ivory">
-                    <I className="h-6 w-6 transition-transform duration-500 group-hover:scale-110" />
-                  </span>
-                  <h3 className="mt-6 font-display text-2xl text-forest">{title}</h3>
-                  <p className="mt-2 leading-relaxed text-ink/70">{text}</p>
+                  <div className="relative p-7 pt-0">
+                    <span className="-mt-7 grid h-14 w-14 place-items-center rounded-2xl bg-forest text-ivory shadow-lift ring-4 ring-white transition-all duration-500 group-hover:rotate-[-8deg] group-hover:bg-nut">
+                      <I className="h-6 w-6" />
+                    </span>
+                    <h3 className="mt-5 font-display text-2xl text-forest">{title}</h3>
+                    <p className="mt-2 leading-relaxed text-ink/70">{text}</p>
+                  </div>
                 </div>
               </StaggerItem>
             ))}

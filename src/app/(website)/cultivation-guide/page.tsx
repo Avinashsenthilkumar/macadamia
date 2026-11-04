@@ -6,6 +6,8 @@ import { SectionNav } from "@/components/content/section-nav";
 import { PhScaleDiagram, PollinationDiagram, SpacingDiagram, TemperatureDiagram } from "@/components/content/guide-diagrams";
 import { Reveal } from "@/components/motion/primitives";
 import { Icon } from "@/components/ui/icon";
+import Image from "next/image";
+import { guideImages, pics } from "@/content/images";
 import { cultivationDisclaimer, guideSections, references } from "@/content/macadamia";
 import { getSiteSettings } from "@/lib/settings";
 import { pageMetadata } from "@/lib/seo";
@@ -83,7 +85,13 @@ export default async function CultivationGuidePage() {
             <div className="space-y-6">
               {guideSections.map((s, i) => (
                 <article key={s.id} id={s.id} className="scroll-mt-28">
-                  <Reveal className="group rounded-[2rem] bg-white/70 p-6 ring-1 ring-forest/5 transition-colors duration-500 hover:bg-white sm:p-10">
+                  <Reveal className="group overflow-hidden rounded-[2rem] bg-white/70 ring-1 ring-forest/5 transition-colors duration-500 hover:bg-white">
+                    <div className="relative h-52 overflow-hidden sm:h-64">
+                      <Image src={(guideImages[s.id] ?? pics.orchardRows).src} alt={(guideImages[s.id] ?? pics.orchardRows).alt} fill sizes="(min-width:1024px) 60vw, 100vw" className="object-cover transition-transform duration-[1.4s] group-hover:scale-105" />
+                      <span className="absolute inset-0 bg-gradient-to-t from-deep/60 via-transparent to-transparent" />
+                      <span className="absolute bottom-4 left-6 font-display text-6xl leading-none text-ivory/90 sm:left-10">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <div className="p-6 sm:p-10">
                     <header className="flex items-start gap-5">
                       <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-forest text-ivory transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-105">
                         <Icon name={s.icon} className="h-6 w-6" />
@@ -143,6 +151,7 @@ export default async function CultivationGuidePage() {
                         {s.callout}
                       </p>
                     ) : null}
+                    </div>
                   </Reveal>
                 </article>
               ))}

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHero } from "@/components/layout/page-hero";
 import { EnquiryForm } from "@/components/forms/enquiry-form";
-import { Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
+import { ImageReveal, Reveal, Stagger, StaggerItem } from "@/components/motion/primitives";
 import { MapEmbed, mapsLink } from "@/components/ui/map-embed";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-float";
 import { buttonClasses } from "@/components/ui/button";
 import { getSiteSettings } from "@/lib/settings";
+import Image from "next/image";
+import { pics } from "@/content/images";
 import { pageMetadata } from "@/lib/seo";
 import { telHref } from "@/lib/utils";
 import { whatsappLink, whatsappMessages } from "@/lib/whatsapp";
@@ -88,6 +90,19 @@ export default async function ContactPage() {
                 </li>
               ))}
             </ul>
+            <div className="mt-10 grid grid-cols-2 gap-4">
+              <ImageReveal className="relative aspect-[3/4] rounded-3xl shadow-lift">
+                <Image src={pics.saplingHandover.src} alt={pics.saplingHandover.alt} fill sizes="(min-width:1024px) 20vw, 50vw" className="object-cover" />
+              </ImageReveal>
+              <div className="grid gap-4">
+                <ImageReveal className="relative aspect-square rounded-3xl shadow-lift" direction="left">
+                  <Image src={pics.nurseryBeds.src} alt={pics.nurseryBeds.alt} fill sizes="(min-width:1024px) 20vw, 50vw" className="object-cover" />
+                </ImageReveal>
+                <ImageReveal className="relative aspect-square rounded-3xl shadow-lift" direction="right">
+                  <Image src={pics.truck.src} alt={pics.truck.alt} fill sizes="(min-width:1024px) 20vw, 50vw" className="object-cover" />
+                </ImageReveal>
+              </div>
+            </div>
           </Reveal>
           <Reveal delay={0.1} className="rounded-[2rem] bg-white p-6 shadow-lift sm:p-10 lg:col-span-3">
             <EnquiryForm whatsappNumber={s.whatsappNumber} source="contact" />
