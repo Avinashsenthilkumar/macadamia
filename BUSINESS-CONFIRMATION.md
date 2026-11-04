@@ -33,6 +33,7 @@ Hidden until confirmed: Plantation Consultation, Spacing & Layout Guidance, Soil
 - [ ] Nursery/dispatch photos came from the existing banners (they show other species, e.g. timber saplings) and are captioned generally, not as macadamia.
 
 ## Content
+- [ ] **About → “The person behind it”** — confirm the person's name/title if it should be shown, their consent to the photo, and approve the quote wording (adapted for macadamia from the Burma Teak site).
 - [ ] **Testimonials** — none published. Add only genuine ones with the customer's permission.
 - [ ] **FAQ answers** about varieties, grafted plants, MOQ, price and delivery are neutral “please contact us” answers — replace with confirmed details.
 - [ ] **Blog articles and cultivation guide** — written from published references (listed on each page). Ask an agronomist to review before relying on them commercially; local, validated recommendations should be added where available.

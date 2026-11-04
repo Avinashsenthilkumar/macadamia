@@ -2,6 +2,12 @@ import "server-only";
 import { cache } from "react";
 import type { Prisma } from "@prisma/client";
 import { db, safeQuery } from "@/lib/db";
+import { fallbackCategories, fallbackFaqs, fallbackGallery, fallbackPosts, fallbackServices, filterFallbackPosts } from "@/lib/fallbacks";
+
+/** True when the database has no published posts at all (or is unreachable) → use built-in articles */
+const usingFallbackPosts = cache(async () =>
+  safeQuery(async () => (await db.blogPost.count({ where: { status: "PUBLISHED" } })) === 0, true, "post count"),
+);
 
 // ─── Products ───────────────────────────────────────────────────────────
 
@@ -69,11 +75,8 @@ export async function getProductOptions() {
 // ─── Services ───────────────────────────────────────────────────────────
 
 export async function getPublishedServices() {
-  return safeQuery(
-    () => db.service.findMany({ where: { isPublished: true }, orderBy: { sortOrder: "asc" } }),
-    [],
-    "services",
-  );
+  const rows = await safeQuery(() => db.service.findMany({ where: { isPublished: true }, orderBy: { sortOrder: "asc" } }), [], "services");
+  return rows.length ? rows : fallbackServices;
 }
 
 // ─── Blog ───────────────────────────────────────────────────────────────
@@ -96,6 +99,11 @@ export async function getPublishedPosts(opts: { q?: string; category?: string; t
         }
       : {}),
   };
+  if (await usingFallbackPosts()) {
+    const all = filterFallbackPosts(opts);
+    const skip = opts.skip ?? 0;
+    return { posts: all.slice(skip, opts.take ? skip + opts.take : undefined), total: all.length };
+  }
   return safeQuery(
     async () => {
       const [posts, total] = await Promise.all([
@@ -109,8 +117,9 @@ export async function getPublishedPosts(opts: { q?: string; category?: string; t
   );
 }
 
-export const getPostBySlug = cache(async (slug: string) =>
-  safeQuery(
+export const getPostBySlug = cache(async (slug: string): Promise<PublicPost | null> => {
+  if (await usingFallbackPosts()) return fallbackPosts.find((p) => p.slug === slug) ?? null;
+  return safeQuery(
     () =>
       db.blogPost.findFirst({
         where: { slug, status: "PUBLISHED", publishedAt: { lte: new Date() } },
@@ -118,10 +127,15 @@ export const getPostBySlug = cache(async (slug: string) =>
       }),
     null,
     "post",
-  ),
-);
+  );
+});
 
 export async function getRelatedPosts(post: { id: string; categoryId: string | null }, take = 3) {
+  if (post.id.startsWith("static-")) {
+    const same = fallbackPosts.filter((p) => p.id !== post.id && p.categoryId === post.categoryId);
+    const others = fallbackPosts.filter((p) => p.id !== post.id && p.categoryId !== post.categoryId);
+    return [...same, ...others].slice(0, take);
+  }
   return safeQuery(
     () =>
       db.blogPost.findMany({
@@ -141,6 +155,7 @@ export async function getRelatedPosts(post: { id: string; categoryId: string | n
 }
 
 export async function getBlogCategories() {
+  if (await usingFallbackPosts()) return fallbackCategories;
   return safeQuery(
     () =>
       db.blogCategory.findMany({
@@ -155,7 +170,7 @@ export async function getBlogCategories() {
 // ─── Gallery, FAQ, testimonials ─────────────────────────────────────────
 
 export async function getGalleryImages(take?: number) {
-  return safeQuery(
+  const rows = await safeQuery(
     () =>
       db.galleryImage.findMany({
         where: { isPublished: true },
@@ -165,14 +180,16 @@ export async function getGalleryImages(take?: number) {
     [],
     "gallery",
   );
+  return rows.length ? rows : fallbackGallery.slice(0, take);
 }
 
 export async function getPublishedFaqs(take?: number) {
-  return safeQuery(
+  const rows = await safeQuery(
     () => db.faq.findMany({ where: { isPublished: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }], take }),
     [],
     "faqs",
   );
+  return rows.length ? rows : fallbackFaqs.slice(0, take);
 }
 
 export async function getPublishedTestimonials() {

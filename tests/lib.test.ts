@@ -92,3 +92,16 @@ test("utility helpers", () => {
   assert.equal(truncate("abcdefghij", 5), "abcd…");
   assert.equal(whatsappLink("+91 99431 19955", "Hi there"), "https://wa.me/919943119955?text=Hi%20there");
 });
+
+test("built-in fallback content keeps public pages filled", async () => {
+  const f = await import("../src/lib/fallbacks");
+  assert.equal(f.fallbackPosts.length, 8);
+  assert.ok(f.fallbackPosts.every((p) => p.coverImage && p.content.length > 200 && p.category));
+  assert.equal(new Set(f.fallbackPosts.map((p) => p.slug)).size, 8, "unique slugs");
+  assert.ok(f.fallbackGallery.length >= 20);
+  assert.ok(f.fallbackGallery.every((g) => g.url.startsWith("/images/")));
+  assert.ok(f.fallbackFaqs.length >= 10);
+  assert.ok(f.fallbackServices.length >= 1 && f.fallbackServices.every((s) => s.isPublished));
+  assert.equal(f.filterFallbackPosts({ q: "pollination" }).length > 0, true);
+  assert.equal(f.filterFallbackPosts({ category: "cultivation" }).every((p) => p.category?.slug === "cultivation"), true);
+});
